@@ -19,38 +19,15 @@ struct ContentView: View {
                 .ignoresSafeArea()
             
             NavigationStack {
-                List {
-                    ForEach(items.indices, id: \.self) { index in
-                        HStack(alignment: .center, spacing: 12) {
-                            Image(systemName: "doc.on.clipboard")
-                                .foregroundColor(.blue)
-                                .font(.system(size: 18))
-                                .frame(width: 20)
-                            
-                            Text(items[index])
-                                .font(.body)
-                                .foregroundColor(.primary)
-                                .multilineTextAlignment(.leading)
-                                .fixedSize(horizontal: false, vertical: true)
-                            
-                            Spacer()
-                            
-                            Button(action: {
-                                items.remove(at: index)
-                            }) {
-                                Image(systemName: "trash")
-                                    .foregroundColor(.red)
-                                    .font(.system(size: 16))
-                            }
-                            .buttonStyle(PlainButtonStyle())
-                            .frame(width: 20)
-                        }
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 8)
+                ItemListView(
+                    items: items,
+                    onDelete: { index in
+                        items.remove(at: index)
+                    },
+                    onAdd: { newText in
+                        items.append(newText)
                     }
-                }
-                .listStyle(PlainListStyle())
-                .scrollContentBackground(.hidden)
+                )
                 .navigationTitle("Items")
                 .frame(width: 400, height: 600)
             }
