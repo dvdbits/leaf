@@ -6,5 +6,7 @@ struct LeafUiApp: App {
         WindowGroup {
             ContentView()
         }
+        .windowResizability(.contentSize)
+        .defaultSize(width: 400, height: 600)
     }
 }
