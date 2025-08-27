@@ -1,15 +1,15 @@
 import SwiftUI
 
 struct ItemListView: View {
-    let items: [String]
+    let items: [LeafItem]
     let onDelete: (Int) -> Void
-    let onAdd: (String) -> Void
+    let onAdd: (LeafItem) -> Void
     @State private var copiedIndex: Int? = nil
     @State private var showingAddSheet = false
     
-    private func copyToClipboard(_ text: String, at index: Int) {
+    private func copyToClipboard(_ item: LeafItem, at index: Int) {
         NSPasteboard.general.clearContents()
-        NSPasteboard.general.setString(text, forType: .string)
+        NSPasteboard.general.setString(item.data, forType: .string)
         
         copiedIndex = index
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
@@ -49,11 +49,20 @@ struct ItemListView: View {
                     .buttonStyle(PlainButtonStyle())
                     .frame(width: 30)
                     
-                    Text(items[index])
-                        .font(.body)
-                        .foregroundColor(.primary)
-                        .multilineTextAlignment(.leading)
-                        .fixedSize(horizontal: false, vertical: true)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(items[index].data)
+                            .font(.body)
+                            .foregroundColor(.primary)
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                        
+                        if !items[index].alias.isEmpty {
+                            Text(items[index].alias)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .italic()
+                        }
+                    }
                     
                     Spacer()
                     
@@ -86,9 +95,9 @@ struct ItemListView: View {
 #Preview {
     ItemListView(
         items: [
-            "Short",
-            "Medium length item",
-            "This is a much longer item that should wrap to multiple lines"
+            LeafItem(data: "Short", alias: "quick"),
+            LeafItem(data: "Medium length item", alias: "medium"),
+            LeafItem(data: "This is a much longer item that should wrap to multiple lines", alias: "long")
         ],
         onDelete: { _ in },
         onAdd: { _ in }

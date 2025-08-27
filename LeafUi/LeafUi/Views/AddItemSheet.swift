@@ -3,7 +3,8 @@ import SwiftUI
 struct AddItemSheet: View {
     @Binding var isPresented: Bool
     @State private var newItemText = ""
-    let onAdd: (String) -> Void
+    @State private var newItemAlias = ""
+    let onAdd: (LeafItem) -> Void
     
     var body: some View {
         VStack(spacing: 20) {
@@ -14,18 +15,28 @@ struct AddItemSheet: View {
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .frame(width: 300)
             
+            TextField("Enter alias (optional)", text: $newItemAlias)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .frame(width: 300)
+            
             HStack(spacing: 12) {
                 Button("Cancel") {
                     isPresented = false
                     newItemText = ""
+                    newItemAlias = ""
                 }
                 .buttonStyle(.bordered)
                 
                 Button("Add") {
                     if !newItemText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                        onAdd(newItemText.trimmingCharacters(in: .whitespacesAndNewlines))
+                        let item = LeafItem(
+                            data: newItemText.trimmingCharacters(in: .whitespacesAndNewlines),
+                            alias: newItemAlias.trimmingCharacters(in: .whitespacesAndNewlines)
+                        )
+                        onAdd(item)
                         isPresented = false
                         newItemText = ""
+                        newItemAlias = ""
                     }
                 }
                 .buttonStyle(.borderedProminent)
@@ -33,7 +44,7 @@ struct AddItemSheet: View {
             }
         }
         .padding(20)
-        .frame(width: 350, height: 150)
+        .frame(width: 350, height: 200)
     }
 }
 

@@ -1,17 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var items = [
-        "Short",
-        "Medium length item",
-        "This is a much longer item that should wrap to multiple lines when it doesn't fit on a single row",
-        "Another short one",
-        "This item has a moderate amount of text that might need to wrap depending on the screen size and available space",
-        "Tiny",
-        "A very long item with lots of descriptive text that will definitely need to wrap across multiple lines to display properly in the interface",
-        "Quick",
-        "This is an example of text that contains multiple sentences and should demonstrate how the interface handles longer content gracefully"
-    ]
+    @StateObject private var dataManager = LeafDataManager()
     
     var body: some View {
         ZStack {
@@ -20,12 +10,12 @@ struct ContentView: View {
             
             NavigationStack {
                 ItemListView(
-                    items: items,
+                    items: dataManager.items,
                     onDelete: { index in
-                        items.remove(at: index)
+                        dataManager.deleteItem(at: index)
                     },
-                    onAdd: { newText in
-                        items.append(newText)
+                    onAdd: { newItem in
+                        dataManager.addItem(newItem)
                     }
                 )
                 .navigationTitle("Items")
