@@ -4,10 +4,15 @@ class DataManager {
     private let fileURL: URL
     
     init() {
-        let documentsPath = FileManager.default.homeDirectoryForCurrentUser
+        let containerPath = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library")
+            .appendingPathComponent("Containers")
+            .appendingPathComponent("dvdbits.LeafUi")
+            .appendingPathComponent("Data")
             .appendingPathComponent("Documents")
             .appendingPathComponent("leaf.json")
-        self.fileURL = documentsPath
+        
+        self.fileURL = containerPath
     }
     
     func getItem(for alias: String) -> LeafItem? {
