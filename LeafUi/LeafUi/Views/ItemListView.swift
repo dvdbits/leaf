@@ -4,8 +4,11 @@ struct ItemListView: View {
     let items: [LeafItem]
     let onDelete: (Int) -> Void
     let onAdd: (LeafItem) -> Void
+    let onUpdate: (LeafItem) -> Void
     @State private var copiedIndex: Int? = nil
     @State private var showingAddSheet = false
+    @State private var itemToEdit: LeafItem? = nil
+    @State private var itemToDelete: LeafItem? = nil
     
     private func copyToClipboard(_ item: LeafItem, at index: Int) {
         NSPasteboard.general.clearContents()
@@ -67,7 +70,17 @@ struct ItemListView: View {
                     Spacer()
                     
                     Button(action: {
-                        onDelete(index)
+                        itemToEdit = items[index]
+                    }) {
+                        Image(systemName: "pencil")
+                            .foregroundColor(.blue)
+                            .font(.system(size: 16))
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .frame(width: 30)
+                    
+                    Button(action: {
+                        itemToDelete = items[index]
                     }) {
                         Image(systemName: "trash")
                             .foregroundColor(.red)
@@ -86,7 +99,25 @@ struct ItemListView: View {
         .sheet(isPresented: $showingAddSheet) {
             AddItemSheet(
                 isPresented: $showingAddSheet,
-                onAdd: onAdd
+                onAdd: onAdd,
+                existingAliases: items.map { $0.alias }.filter { !$0.isEmpty }
+            )
+        }
+        .sheet(item: $itemToEdit) { item in
+            EditItemSheet(
+                item: item,
+                onUpdate: onUpdate,
+                existingAliases: items.filter { $0.id != item.id }.map { $0.alias }.filter { !$0.isEmpty }
+            )
+        }
+        .sheet(item: $itemToDelete) { item in
+            DeleteConfirmationDialog(
+                item: item,
+                onConfirm: {
+                    if let index = items.firstIndex(where: { $0.id == item.id }) {
+                        onDelete(index)
+                    }
+                }
             )
         }
     }
@@ -100,6 +131,7 @@ struct ItemListView: View {
             LeafItem(data: "This is a much longer item that should wrap to multiple lines", alias: "long")
         ],
         onDelete: { _ in },
-        onAdd: { _ in }
+        onAdd: { _ in },
+        onUpdate: { _ in }
     )
 } 

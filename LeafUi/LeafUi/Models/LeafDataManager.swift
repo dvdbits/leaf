@@ -55,6 +55,13 @@ class LeafDataManager: ObservableObject {
         saveItems()
     }
     
+    func isAliasUnique(_ alias: String, excludingItemId: UUID? = nil) -> Bool {
+        if alias.isEmpty { return true }
+        return !items.contains { item in
+            item.alias == alias && item.id != excludingItemId
+        }
+    }
+    
     func deleteItem(at index: Int) {
         guard index >= 0 && index < items.count else { return }
         items.remove(at: index)

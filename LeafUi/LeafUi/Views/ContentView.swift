@@ -16,6 +16,9 @@ struct ContentView: View {
                     },
                     onAdd: { newItem in
                         dataManager.addItem(newItem)
+                    },
+                    onUpdate: { updatedItem in
+                        dataManager.updateItem(updatedItem)
                     }
                 )
                 .navigationTitle("Items")
