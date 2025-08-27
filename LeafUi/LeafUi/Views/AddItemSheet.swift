@@ -12,21 +12,44 @@ struct AddItemSheet: View {
             Text("Add New Item")
                 .font(.headline)
             
-            TextField("Enter item text", text: $newItemText)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .frame(width: 300)
+            TextEditor(text: $newItemText)
+                .frame(width: 300, height: 120)
+                .padding(8)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color(nsColor: .textBackgroundColor))
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.gray.opacity(0.4), lineWidth: 1.5)
+                )
+                .overlay(
+                    Group {
+                        if newItemText.isEmpty {
+                            Text("Enter item text")
+                                .foregroundColor(.gray.opacity(0.6))
+                                .padding(.horizontal, 15)
+                                .padding(.vertical, 5)
+                                .allowsHitTesting(false)
+                        }
+                    },
+                    alignment: .topLeading
+                )
+                .onTapGesture {
+                    // This helps with focus management
+                }
             
             VStack(alignment: .leading, spacing: 4) {
                 TextField("Enter alias (optional)", text: $newItemAlias)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(width: 300)
+                    .frame(width: 300, height: 32)
                 
                 HStack {
-                    if !newItemAlias.isEmpty && existingAliases.contains(newItemAlias) {
-                        Text("Alias must be unique")
-                            .font(.caption2)
-                            .foregroundColor(.red)
-                    }
+                                if !newItemAlias.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && existingAliases.contains(newItemAlias.trimmingCharacters(in: .whitespacesAndNewlines)) {
+                Text("Alias must be unique")
+                    .font(.caption2)
+                    .foregroundColor(.red)
+            }
                     Spacer()
                 }
                 .frame(height: 16)
@@ -54,11 +77,11 @@ struct AddItemSheet: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(newItemText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || 
-                         (!newItemAlias.isEmpty && existingAliases.contains(newItemAlias)))
+                         (!newItemAlias.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && existingAliases.contains(newItemAlias.trimmingCharacters(in: .whitespacesAndNewlines))))
             }
         }
         .padding(20)
-        .frame(width: 350, height: 220)
+        .frame(width: 350, height: 320)
     }
 }
 

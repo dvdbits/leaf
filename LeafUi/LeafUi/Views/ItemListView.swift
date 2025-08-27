@@ -53,14 +53,14 @@ struct ItemListView: View {
                     .frame(width: 30)
                     
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(items[index].data)
+                        Text(items[index].data.count > 100 ? String(items[index].data.prefix(100)) + "..." : items[index].data)
                             .font(.body)
                             .foregroundColor(.primary)
                             .multilineTextAlignment(.leading)
                             .fixedSize(horizontal: false, vertical: true)
                         
                         if !items[index].alias.isEmpty {
-                            Text(items[index].alias)
+                            Text(items[index].alias.count > 20 ? String(items[index].alias.prefix(20)) + "..." : items[index].alias)
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                                 .italic()

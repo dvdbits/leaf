@@ -15,7 +15,8 @@ struct EditItemSheet: View {
     }
     
     private var isAliasValid: Bool {
-        editedAlias.isEmpty || !existingAliases.contains(editedAlias) || editedAlias == item.alias
+        let trimmedAlias = editedAlias.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmedAlias.isEmpty || !existingAliases.contains(trimmedAlias)
     }
     
     private var canSave: Bool {
@@ -27,14 +28,37 @@ struct EditItemSheet: View {
             Text("Edit Item")
                 .font(.headline)
             
-            TextField("Enter item text", text: $editedData)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .frame(width: 300)
+            TextEditor(text: $editedData)
+                .frame(width: 300, height: 120)
+                .padding(8)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color(nsColor: .textBackgroundColor))
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.gray.opacity(0.4), lineWidth: 1.5)
+                )
+                .overlay(
+                    Group {
+                        if editedData.isEmpty {
+                            Text("Enter item text")
+                                .foregroundColor(.gray.opacity(0.6))
+                                .padding(.horizontal, 15)
+                                .padding(.vertical, 5)
+                                .allowsHitTesting(false)
+                        }
+                    },
+                    alignment: .topLeading
+                )
+                .onTapGesture {
+                    // This helps with focus management
+                }
             
             VStack(alignment: .leading, spacing: 4) {
                 TextField("Enter alias (optional)", text: $editedAlias)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(width: 300)
+                    .frame(width: 300, height: 32)
                 
                 HStack {
                     if !isAliasValid {
@@ -67,7 +91,7 @@ struct EditItemSheet: View {
             }
         }
         .padding(20)
-        .frame(width: 350, height: 220)
+        .frame(width: 350, height: 320)
         .onAppear {
             editedData = item.data
             editedAlias = item.alias
