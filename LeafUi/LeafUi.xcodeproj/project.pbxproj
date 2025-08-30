@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		BFE917542E5E1FE000818BDD /* LeafUi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LeafUi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BFE917542E5E1FE000818BDD /* Leaf.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Leaf.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -40,7 +40,7 @@
 		BFE917552E5E1FE000818BDD /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BFE917542E5E1FE000818BDD /* LeafUi.app */,
+				BFE917542E5E1FE000818BDD /* Leaf.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -67,7 +67,7 @@
 			packageProductDependencies = (
 			);
 			productName = LeafUi;
-			productReference = BFE917542E5E1FE000818BDD /* LeafUi.app */;
+			productReference = BFE917542E5E1FE000818BDD /* Leaf.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -261,7 +261,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dvdbits.LeafUi;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Leaf;
 				REGISTER_APP_GROUPS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -286,7 +286,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dvdbits.LeafUi;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Leaf;
 				REGISTER_APP_GROUPS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

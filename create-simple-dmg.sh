@@ -59,31 +59,31 @@ UI_APP_FOUND=false
 
 # Check archived app location first (highest priority)
 if [ -d "$HOME/Library/Developer/Xcode/Archives" ]; then
-    ARCHIVED_APP=$(find "$HOME/Library/Developer/Xcode/Archives" -name "LeafUi.app" -type d -path "*/Products/Applications/*" 2>/dev/null | head -1)
+    ARCHIVED_APP=$(find "$HOME/Library/Developer/Xcode/Archives" -name "Leaf.app" -type d -path "*/Products/Applications/*" 2>/dev/null | head -1)
     if [ -n "$ARCHIVED_APP" ]; then
         print_status "Copying UI app from archive..."
         cp -R "$ARCHIVED_APP" "$DMG_DIR/"
         UI_APP_FOUND=true
     fi
 # Check local build directories
-elif [ -d "LeafUi/build/Release/LeafUi.app" ]; then
+elif [ -d "LeafUi/build/Release/Leaf.app" ]; then
     print_status "Copying UI app from local build..."
-    cp -R "LeafUi/build/Release/LeafUi.app" "$DMG_DIR/"
+    cp -R "LeafUi/build/Release/Leaf.app" "$DMG_DIR/"
     UI_APP_FOUND=true
-elif [ -d "LeafUi/DerivedData/LeafUi/Build/Products/Release/LeafUi.app" ]; then
+elif [ -d "LeafUi/DerivedData/LeafUi/Build/Products/Release/Leaf.app" ]; then
     print_status "Copying UI app from local DerivedData..."
-    cp -R "LeafUi/DerivedData/LeafUi/Build/Products/Release/LeafUi.app" "$DMG_DIR/"
+    cp -R "LeafUi/DerivedData/LeafUi/Build/Products/Release/Leaf.app" "$DMG_DIR/"
     UI_APP_FOUND=true
 # Check system DerivedData location
 elif [ -d "$HOME/Library/Developer/Xcode/DerivedData" ]; then
-    DERIVED_DATA_APP=$(find "$HOME/Library/Developer/Xcode/DerivedData" -name "LeafUi.app" -type d -path "*/Build/Products/Release/*" 2>/dev/null | head -1)
+    DERIVED_DATA_APP=$(find "$HOME/Library/Developer/Xcode/DerivedData" -name "Leaf.app" -type d -path "*/Build/Products/Release/*" 2>/dev/null | head -1)
     if [ -n "$DERIVED_DATA_APP" ]; then
         print_status "Copying UI app from system DerivedData..."
         cp -R "$DERIVED_DATA_APP" "$DMG_DIR/"
         UI_APP_FOUND=true
     else
         # Try Debug build if Release not found
-        DERIVED_DATA_APP=$(find "$HOME/Library/Developer/Xcode/DerivedData" -name "LeafUi.app" -type d -path "*/Build/Products/Debug/*" 2>/dev/null | head -1)
+        DERIVED_DATA_APP=$(find "$HOME/Library/Developer/Xcode/DerivedData" -name "Leaf.app" -type d -path "*/Build/Products/Debug/*" 2>/dev/null | head -1)
         if [ -n "$DERIVED_DATA_APP" ]; then
             print_status "Copying UI app from system DerivedData (Debug build)..."
             cp -R "$DERIVED_DATA_APP" "$DMG_DIR/"
@@ -137,11 +137,11 @@ print_error() {
 
 # Install UI App
 print_status "Installing Leaf UI app..."
-if [ -d "/Applications/LeafUi.app" ]; then
-    print_warning "LeafUi.app already exists. Removing old version..."
-    rm -rf "/Applications/LeafUi.app"
+if [ -d "/Applications/Leaf.app" ]; then
+    print_warning "Leaf.app already exists. Removing old version..."
+    rm -rf "/Applications/Leaf.app"
 fi
-cp -R "$SCRIPT_DIR/LeafUi.app" "/Applications/"
+cp -R "$SCRIPT_DIR/Leaf.app" "/Applications/"
 print_status "✅ Leaf UI app installed successfully"
 
 # Install CLI Tool
@@ -216,7 +216,7 @@ if command -v create-dmg &> /dev/null; then
         --window-pos 200 120 \
         --window-size 600 400 \
         --icon-size 100 \
-        --icon "LeafUi.app" 175 120 \
+        --icon "Leaf.app" 175 120 \
         --icon "Install Leaf.command" 175 220 \
         --icon "README.txt" 175 320 \
         --icon "Applications" 425 120 \
