@@ -52,13 +52,32 @@ class LeafCLI {
         
         print("Executing command for alias '\(alias)':")
         print("Command: \(item.data)")
+        print("Mode: Interactive streaming (use Ctrl+C to terminate)")
         print("---")
         
-        let exitCode = commandExecutor.execute(item.data)
+        // Set up signal handling for graceful termination
+        setupSignalHandling()
+        
+        // Always use interactive streaming
+        let exitCode = commandExecutor.executeWithStreaming(item.data, interactive: true)
         
         if exitCode != 0 {
-            print("Command exited with code: \(exitCode)")
+            print("\nCommand exited with code: \(exitCode)")
             exit(exitCode)
+        }
+    }
+    
+    private func setupSignalHandling() {
+        // Handle Ctrl+C gracefully
+        signal(SIGINT) { _ in
+            print("\n\nReceived interrupt signal. Terminating...")
+            exit(0)
+        }
+        
+        // Handle termination signal
+        signal(SIGTERM) { _ in
+            print("\n\nReceived termination signal. Terminating...")
+            exit(0)
         }
     }
     
@@ -94,7 +113,7 @@ class LeafCLI {
         Leaf CLI - Execute commands stored in your Leaf app
         
         Usage:
-            leaf run <alias>     Execute the command associated with the alias
+            leaf run <alias>     Execute the command with interactive streaming
             leaf show <alias>    Show the command associated with the alias
             leaf list           List all available aliases
             leaf help           Show this help message
