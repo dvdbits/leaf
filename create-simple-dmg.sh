@@ -162,7 +162,7 @@ fi
 
 # Create leaf.json if it doesn't exist
 if [ ! -f "$HOME/Documents/leaf.json" ]; then
-    echo "[]" > "$HOME/Documents/leaf.json"
+    echo '{"version":"1.0.0","items":[]}' > "$HOME/Documents/leaf.json"
     chmod 644 "$HOME/Documents/leaf.json"
     print_status "✅ Created initial leaf.json file"
 fi

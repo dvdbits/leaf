@@ -2,6 +2,7 @@ import Foundation
 
 class LeafDataManager: ObservableObject {
     @Published var items: [LeafItem] = []
+    @Published var version: String = "1.0.0"
     private let fileName = "leaf.json"
     
     init() {
@@ -23,9 +24,27 @@ class LeafDataManager: ObservableObject {
         do {
             if FileManager.default.fileExists(atPath: fileURL.path) {
                 let data = try Data(contentsOf: fileURL)
-                let decodedItems = try JSONDecoder().decode([LeafItem].self, from: data)
-                DispatchQueue.main.async {
-                    self.items = decodedItems
+                
+                // Try to decode as new format first
+                do {
+                    let leafData = try JSONDecoder().decode(LeafData.self, from: data)
+                    DispatchQueue.main.async {
+                        self.items = leafData.items
+                        self.version = leafData.version
+                    }
+                } catch {
+                    // If that fails, try to decode as old array format
+                    let items = try JSONDecoder().decode([LeafItem].self, from: data)
+                    print("Migrating from old format to new versioned format...")
+                    
+                    DispatchQueue.main.async {
+                        self.items = items
+                        self.version = "1.0.0"
+                    }
+                    
+                    // Save the migrated data
+                    saveItems()
+                    print("Migration completed successfully!")
                 }
             } else {
                 // Create empty file if it doesn't exist
@@ -35,6 +54,7 @@ class LeafDataManager: ObservableObject {
             print("Error loading items: \(error)")
             DispatchQueue.main.async {
                 self.items = []
+                self.version = "1.0.0"
             }
         }
     }
@@ -43,7 +63,8 @@ class LeafDataManager: ObservableObject {
         let fileURL = getFileURL()
         
         do {
-            let data = try JSONEncoder().encode(items)
+            let leafData = LeafData(version: version, items: items)
+            let data = try JSONEncoder().encode(leafData)
             try data.write(to: fileURL)
         } catch {
             print("Error saving items: \(error)")
