@@ -5,6 +5,8 @@ struct ItemListView: View {
     let onDelete: (Int) -> Void
     let onAdd: (LeafItem) -> Void
     let onUpdate: (LeafItem) -> Void
+    let onExport: () -> Void
+    let onImport: () -> Void
     @State private var copiedIndex: Int? = nil
     @State private var showingAddSheet = false
     @State private var itemToEdit: LeafItem? = nil
@@ -22,9 +24,10 @@ struct ItemListView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Add button separated from list
+            // Top bar with centered Add button
             HStack {
                 Spacer()
+                
                 Button(action: {
                     showingAddSheet = true
                 }) {
@@ -33,12 +36,14 @@ struct ItemListView: View {
                         .font(.system(size: 24))
                 }
                 .buttonStyle(PlainButtonStyle())
-                .padding(.vertical, 16)
-                .padding(.horizontal, 16)
+                .help("Add new item")
+                
                 Spacer()
             }
+            .padding(.vertical, 16)
+            .background(Color(nsColor: .controlBackgroundColor))
             
-            // List of items
+            // List of items (main content area)
             List {
                 ForEach(items.indices, id: \.self) { index in
                 HStack(alignment: .center, spacing: 12) {
@@ -95,6 +100,37 @@ struct ItemListView: View {
         }
         .listStyle(PlainListStyle())
         .scrollContentBackground(.hidden)
+        
+        // Bottom bar with Import and Export buttons
+        HStack(spacing: 20) {
+            Spacer()
+            
+            // Import button
+            Button(action: {
+                onImport()
+            }) {
+                Image(systemName: "square.and.arrow.down")
+                    .foregroundColor(.orange)
+                    .font(.system(size: 20))
+            }
+            .buttonStyle(PlainButtonStyle())
+            .help("Import JSON")
+            
+            // Export button
+            Button(action: {
+                onExport()
+            }) {
+                Image(systemName: "square.and.arrow.up")
+                    .foregroundColor(.green)
+                    .font(.system(size: 20))
+            }
+            .buttonStyle(PlainButtonStyle())
+            .help("Export JSON")
+            
+            Spacer()
+        }
+        .padding(.vertical, 16)
+        .background(Color(nsColor: .controlBackgroundColor))
         }
         .sheet(isPresented: $showingAddSheet) {
             AddItemSheet(
@@ -132,6 +168,8 @@ struct ItemListView: View {
         ],
         onDelete: { _ in },
         onAdd: { _ in },
-        onUpdate: { _ in }
+        onUpdate: { _ in },
+        onExport: { },
+        onImport: { }
     )
 } 

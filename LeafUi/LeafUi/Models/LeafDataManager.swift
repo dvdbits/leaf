@@ -71,6 +71,87 @@ class LeafDataManager: ObservableObject {
         }
     }
     
+    func exportData() -> Data? {
+        let leafData = LeafData(version: version, items: items)
+        return try? JSONEncoder().encode(leafData)
+    }
+    
+    func exportDataAsString() -> String? {
+        guard let data = exportData() else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+    
+    func importData(from url: URL) -> Bool {
+        do {
+            let data = try Data(contentsOf: url)
+            
+            // Try to decode as new format first
+            do {
+                let leafData = try JSONDecoder().decode(LeafData.self, from: data)
+                DispatchQueue.main.async {
+                    self.items = leafData.items
+                    self.version = leafData.version
+                }
+                saveItems()
+                return true
+            } catch {
+                // If that fails, try to decode as old array format
+                let importedItems = try JSONDecoder().decode([LeafItem].self, from: data)
+                print("Importing from old format, converting to new versioned format...")
+                
+                DispatchQueue.main.async {
+                    self.items = importedItems
+                    self.version = "1.0.0"
+                }
+                saveItems()
+                return true
+            }
+        } catch {
+            print("Error importing data: \(error)")
+            return false
+        }
+    }
+    
+    func importDataAndMerge(from url: URL) -> Bool {
+        do {
+            let data = try Data(contentsOf: url)
+            var importedItems: [LeafItem] = []
+            
+            // Try to decode as new format first
+            do {
+                let leafData = try JSONDecoder().decode(LeafData.self, from: data)
+                importedItems = leafData.items
+            } catch {
+                // If that fails, try to decode as old array format
+                importedItems = try JSONDecoder().decode([LeafItem].self, from: data)
+            }
+            
+            // Merge imported items with existing items
+            var mergedItems = items
+            var addedCount = 0
+            
+            for importedItem in importedItems {
+                // Check if item with same alias already exists
+                if !items.contains(where: { $0.alias == importedItem.alias && !importedItem.alias.isEmpty }) {
+                    mergedItems.append(importedItem)
+                    addedCount += 1
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self.items = mergedItems
+            }
+            saveItems()
+            
+            print("Import completed: \(addedCount) new items added")
+            return true
+            
+        } catch {
+            print("Error importing and merging data: \(error)")
+            return false
+        }
+    }
+    
     func addItem(_ item: LeafItem) {
         items.append(item)
         saveItems()
