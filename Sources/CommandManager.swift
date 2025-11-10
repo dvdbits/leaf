@@ -1,10 +1,5 @@
 import Foundation
 
-enum CLIEnvironment: String {
-    case dev = ".leaf-dev"
-    case prod = ".leaf"
-}
-
 final class CommandManager {
     static let environment: CLIEnvironment = {
         #if DEBUG
