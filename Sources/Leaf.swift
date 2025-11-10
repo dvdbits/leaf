@@ -9,6 +9,6 @@ enum CLIEnvironment: String {
 struct Leaf: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "leaf",
-        subcommands: [Run.self, List.self, Add.self, Ai.self],
+        subcommands: [Run.self, List.self, Add.self, Ai.self, AiCfg.self],
     )
 }

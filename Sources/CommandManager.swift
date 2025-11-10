@@ -1,14 +1,6 @@
 import Foundation
 
 final class CommandManager {
-    static let environment: CLIEnvironment = {
-        #if DEBUG
-        return .dev
-        #else
-        return .prod
-        #endif
-    }()
-
     private static var commandsFileURL: URL {
         let folder = FileManager.default.homeDirectoryForCurrentUser
             .appendingPathComponent(environment.rawValue, isDirectory: true)

@@ -12,12 +12,14 @@ struct Ai: AsyncParsableCommand {
     func run() async throws {
         var command: String?
         
-        print("\(blue)Thinking...\(reset)")
         do {
             command = try await generateCommand(prompt: prompt)
+        } catch let configError as LLMClient.LLMClientError {
+            print("\(red)❌ \(configError.localizedDescription)\(reset)")
+            return
         } catch {
             print("\(red)❌ All attempts failed.\(reset)")
-            print("Last error: \(error.localizedDescription)")
+            print("Error: \(error.localizedDescription)")
             return
         }
 
@@ -27,11 +29,12 @@ struct Ai: AsyncParsableCommand {
     }
 
     func generateCommand(prompt: String) async throws -> String {
-        let llmClient = LLMClient()
+        let llmClient = try LLMClient()
         let maxRetries = 3
         var lastError: Error?
         var command: String? = nil
         
+        print("\(blue)Thinking...\(reset)")
         for attempt in 1...maxRetries {            
             do {
                 let responseText = try await llmClient.sendPrompt(prompt: prompt)
@@ -41,6 +44,9 @@ struct Ai: AsyncParsableCommand {
                     break
                 }
             } catch {
+                if let configError = error as? LLMClient.LLMClientError {
+                    throw configError
+                }
                 lastError = error
                 print("Attempt \(attempt) failed, retrying...")
             }
@@ -50,11 +56,15 @@ struct Ai: AsyncParsableCommand {
             }
         }
 
-        if command == nil {
-            throw lastError!
+        guard let finalCommand = command else {
+            if let lastError {
+                throw lastError
+            } else {
+                throw NSError(domain: "AiCommand", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to interpret AI response."])
+            }
         }
 
-        return command!
+        return finalCommand
     }
 
     func confirmRun(command: String) -> Bool {

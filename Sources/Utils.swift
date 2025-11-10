@@ -6,6 +6,15 @@ let yellow = "\u{001B}[0;33m"
 let blue = "\u{001B}[0;34m"
 let reset = "\u{001B}[0;0m"
 
+let environment: CLIEnvironment = {
+    #if DEBUG
+        return .dev
+    #else
+        return .prod
+    #endif
+}()
+
+
 func currentOSName() -> String {
     #if os(macOS)
         return "macOS"
@@ -19,7 +28,6 @@ func currentOSName() -> String {
         return "Unknown OS"
     #endif
 }
-
 
 func extractJSON(from text: String) -> [String: String]? {
     // Match the first JSON object in the text

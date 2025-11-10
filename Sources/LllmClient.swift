@@ -24,20 +24,48 @@ struct LLMResponse: Codable {
 }
 
 class LLMClient {
-    private let baseURL: URL
+    enum LLMClientError: LocalizedError {
+        case missingConfiguration
+        case invalidConfiguration(String)
+
+        var errorDescription: String? {
+            switch self {
+            case .missingConfiguration:
+                return "Invalid AI configuration: configuration file not found."
+            case .invalidConfiguration(let reason):
+                return "Invalid AI configuration: \(reason)"
+            }
+        }
+    }
+
+    private let endpoint: URL
     private let apiKey: String?
     private let model: String
     private let temperature: Double
     private let stream: Bool
     
-    init() {
-        guard let url = URL(string: "http://localhost:11434/api/generate") else {
-            fatalError("Invalid base URL")
+    init() throws {
+        guard let aiCfg = try AiCfgManager.readAiCfg() else {
+            throw LLMClientError.missingConfiguration
         }
-        self.baseURL = url
-        self.model = "qwen3"
-        self.temperature = 0.2
-        self.apiKey = nil
+
+        guard let endpoint = aiCfg.endpoint, !endpoint.isEmpty else {
+            throw LLMClientError.invalidConfiguration("endpoint is missing.")
+        }
+        guard let endpointURL = URL(string: endpoint) else {
+            throw LLMClientError.invalidConfiguration("endpoint is invalid.")
+        }
+        guard let model = aiCfg.model, !model.isEmpty else {
+            throw LLMClientError.invalidConfiguration("model is missing.")
+        }
+        guard let temperature = aiCfg.temperature else {
+            throw LLMClientError.invalidConfiguration("temperature is missing.")
+        }
+
+        self.endpoint = endpointURL
+        self.model = model
+        self.temperature = temperature
+        self.apiKey = aiCfg.apiKey
         self.stream = false
     }
     
@@ -45,7 +73,7 @@ class LLMClient {
         let enhancedPrompt = buildCommandPrompt(userInput: prompt)
         let requestBody = LLMRequest(model: model, temperature: temperature, stream: stream, prompt: enhancedPrompt)
         
-        var request = URLRequest(url: baseURL)
+        var request = URLRequest(url: endpoint)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         if let apiKey = apiKey {
