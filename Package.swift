@@ -5,6 +5,12 @@ import PackageDescription
 
 let package = Package(
     name: "Leaf",
+    platforms: [
+        .macOS(.v15),
+        .iOS(.v15),
+        .tvOS(.v15),
+        .watchOS(.v8)
+    ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.6.2"),
     ],
