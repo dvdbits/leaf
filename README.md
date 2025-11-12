@@ -4,7 +4,13 @@ Leaf is a tiny Swift CLI that lets you save shell command aliases and run them o
 
 ## Installation
 
-Download the executable for your platform from the [Releases](https://github.com/dvdbits/leaf/releases) page, then add it to your PATH.
+```bash
+git clone https://github.com/dvdbits/leaf.git
+cd leaf
+swift build -c release
+```
+
+The executable will be in `.build/release/leaf` (or `.build/*/release/leaf.exe` on Windows). Add it to your PATH.
 
 ## AI Configuration
 
