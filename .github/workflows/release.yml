@@ -1,0 +1,104 @@
+name: Release
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+
+jobs:
+  build-macos:
+    name: Build macOS
+    runs-on: macos-15
+    strategy:
+      matrix:
+        arch: [x86_64, arm64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: swift-actions/setup-swift@v1
+        with:
+          swift-version: "6.1"
+      - name: Build
+        run: swift build -c release --arch ${{ matrix.arch }}
+      - name: Prepare Binary
+        run: |
+          mkdir -p release
+          cp .build/${{ matrix.arch }}-apple-macosx/release/leaf release/leaf-macos-${{ matrix.arch }}
+          chmod +x release/leaf-macos-${{ matrix.arch }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: leaf-macos-${{ matrix.arch }}
+          path: release/leaf-macos-${{ matrix.arch }}
+
+  build-linux:
+    name: Build Linux
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        arch: [x86_64, arm64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: swift-actions/setup-swift@v1
+        with:
+          swift-version: "6.1"
+      - name: Build
+        run: swift build -c release --arch ${{ matrix.arch }}
+      - name: Prepare Binary
+        run: |
+          mkdir -p release
+          cp .build/${{ matrix.arch }}-unknown-linux-gnu/release/leaf release/leaf-linux-${{ matrix.arch }}
+          chmod +x release/leaf-linux-${{ matrix.arch }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: leaf-linux-${{ matrix.arch }}
+          path: release/leaf-linux-${{ matrix.arch }}
+
+  build-windows:
+    name: Build Windows
+    runs-on: windows-latest
+    continue-on-error: true  # Windows Swift support is experimental
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Swift
+        uses: swift-actions/setup-swift@v1
+        with:
+          swift-version: "6.1"
+      - name: Build
+        run: swift build -c release
+      - name: Prepare Binary
+        shell: cmd
+        run: |
+          mkdir release
+          copy .build\x86_64-unknown-windows-msvc\release\leaf.exe release\leaf.exe
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: leaf-windows
+          path: release/leaf.exe
+
+  release:
+    name: Create Release
+    needs: [build-macos, build-linux, build-windows]
+    runs-on: ubuntu-latest
+    if: needs.build-macos.result == 'success' && needs.build-linux.result == 'success'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+      - name: Prepare Release Assets
+        run: |
+          mkdir -p assets
+          # Copy all executables (macOS/Linux)
+          find release-assets -type f -executable -exec cp {} assets/ \;
+          # Copy Windows .exe files
+          find release-assets -name "*.exe" -exec cp {} assets/ \;
+          # List what we found
+          echo "Release assets prepared:"
+          ls -lh assets/ || true
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: assets/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
