@@ -14,6 +14,9 @@ let environment: CLIEnvironment = {
     #endif
 }()
 
+public struct Commands: Codable {
+    var items: [String: String] = [:]
+}
 
 func currentOSName() -> String {
     #if os(macOS)

@@ -18,6 +18,8 @@ struct Leaf: AsyncParsableCommand {
             Show.self,
             Ai.self,
             AiCfg.self,
+            Import.self,
+            Export.self,
         ],
     )
 }

@@ -9,11 +9,6 @@ final class CommandManager {
         return folder.appendingPathComponent("commands.json")
     }
 
-    private struct Commands: Codable {
-        var items: [String: String] = [:]
-    }
-
-
     static func addCommand(alias: String, command: String) throws {
         var commands = Commands()
         
@@ -23,6 +18,23 @@ final class CommandManager {
         }
         
         commands.items[alias] = command
+        
+        let data = try JSONEncoder().encode(commands)
+        try data.write(to: commandsFileURL)
+    }
+
+    static func bulkAddCommands(_ newCommands: [String: String]) throws {
+        var commands = Commands()
+        
+        if FileManager.default.fileExists(atPath: commandsFileURL.path) {
+            let data = try Data(contentsOf: commandsFileURL)
+            commands = try JSONDecoder().decode(Commands.self, from: data)
+        }
+        
+        // Merge new commands with existing ones (new commands will overwrite existing aliases)
+        for (alias, command) in newCommands {
+            commands.items[alias] = command
+        }
         
         let data = try JSONEncoder().encode(commands)
         try data.write(to: commandsFileURL)
