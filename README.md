@@ -2,6 +2,10 @@
 
 Leaf is a tiny Swift CLI that lets you save shell command aliases and run them on demand, or communicate with an LLM to generate commands.
 
+## Installation
+
+Download the executable for your platform from the [Releases](https://github.com/dvdbits/leaf/releases) page, then add it to your PATH.
+
 ## AI Configuration
 
 The AI configuration structure:
