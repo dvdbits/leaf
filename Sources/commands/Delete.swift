@@ -12,12 +12,12 @@ struct Delete: ParsableCommand {
         do {
             let deleted = try CommandManager.deleteCommand(alias: alias)
             if deleted {
-                print("✅ Command '\(alias)' deleted successfully.")
+                print("\(green)✅ Command '\(alias)' deleted successfully.\(reset)")
             } else {
-                print("❌ Alias '\(alias)' does not exist.")
+                print("\(red)❌ Alias '\(alias)' does not exist.\(reset)")
             }
         } catch {
-            print("❌ Error deleting command: \(error)")
+            print("\(red)❌ Error deleting command: \(error)\(reset)")
         }
     }
 }

@@ -14,10 +14,10 @@ struct Show: ParsableCommand {
             if let command = commands[alias] {
                 print(command)
             } else {
-                print("❌ Alias '\(alias)' does not exist.")
+                print("\(red)❌ Alias '\(alias)' does not exist.\(reset)")
             }
         } catch {
-            print("❌ Error reading commands: \(error)")
+            print("\(red)❌ Error reading commands: \(error)\(reset)")
         }
     }
 }

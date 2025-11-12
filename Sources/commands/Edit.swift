@@ -15,12 +15,12 @@ struct Edit: ParsableCommand {
         do {
             let renamed = try CommandManager.renameAlias(oldAlias: oldAlias, newAlias: newAlias)
             if renamed {
-                print("✅ Alias '\(oldAlias)' renamed to '\(newAlias)' successfully.")
+                print("\(green)✅ Alias '\(oldAlias)' renamed to '\(newAlias)' successfully.\(reset)")
             } else {
-                print("❌ Alias '\(oldAlias)' does not exist.")
+                print("\(red)❌ Alias '\(oldAlias)' does not exist.\(reset)")
             }
         } catch {
-            print("❌ Error renaming alias: \(error)")
+            print("\(red)❌ Error renaming alias: \(error)\(reset)")
         }
     }
 }

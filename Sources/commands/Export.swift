@@ -11,7 +11,7 @@ struct Export: ParsableCommand {
             let commandsDict = try CommandManager.readCommands()
             
             guard !commandsDict.isEmpty else {
-                print("❌ Error: No commands to export.")
+                print("\(red)❌ Error: No commands to export.\(reset)")
                 return
             }
             
@@ -19,9 +19,9 @@ struct Export: ParsableCommand {
             commands.items = commandsDict
             
             try IOFileManager.writeCommands(commands)
-            print("✅ Successfully exported \(commandsDict.count) command(s).")
+            print("\(green)✅ Successfully exported \(commandsDict.count) command(s).\(reset)")
         } catch {
-            print("❌ Error exporting commands: \(error.localizedDescription)")
+            print("\(red)❌ Error exporting commands: \(error.localizedDescription)\(reset)")
         }
     }
 }

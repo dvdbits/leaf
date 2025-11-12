@@ -14,9 +14,9 @@ struct Add: ParsableCommand {
     func run() throws {
         do {
             try CommandManager.addCommand(alias: alias, command: command)
-            print("✅ Command '\(alias)' added successfully.")
+            print("\(green)✅ Command '\(alias)' added successfully.\(reset)")
         } catch {
-            print("❌ Error adding command: \(error)")
+            print("\(red)❌ Error adding command: \(error)\(reset)")
         }
     }
 }

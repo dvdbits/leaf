@@ -19,7 +19,7 @@ struct Ai: AsyncParsableCommand {
             return
         } catch {
             print("\(red)❌ All attempts failed.\(reset)")
-            print("Error: \(error.localizedDescription)")
+            print("\(red)Error: \(error.localizedDescription)\(reset)")
             return
         }
 
@@ -48,7 +48,7 @@ struct Ai: AsyncParsableCommand {
                     throw configError
                 }
                 lastError = error
-                print("Attempt \(attempt) failed, retrying...")
+                print("\(yellow)Attempt \(attempt) failed, retrying...\(reset)")
             }
             
             if attempt < maxRetries {

@@ -14,18 +14,18 @@ struct Import: ParsableCommand {
             let importedCommands = try IOFileManager.readCommands(from: path)
             
             guard !importedCommands.items.isEmpty else {
-                print("❌ Error: The file at '\(path)' contains no commands to import.")
+                print("\(red)❌ Error: The file at '\(path)' contains no commands to import.\(reset)")
                 return
             }
             
             try CommandManager.bulkAddCommands(importedCommands.items)
-            print("✅ Successfully imported \(importedCommands.items.count) command(s).")
+            print("\(green)✅ Successfully imported \(importedCommands.items.count) command(s).\(reset)")
         } catch let error as NSError where error.domain == "IOFileManager" && error.code == 404 {
-            print("❌ Error: File not found at path '\(path)'.")
+            print("\(red)❌ Error: File not found at path '\(path)'.\(reset)")
         } catch let decodingError as DecodingError {
-            print("❌ Error: Invalid JSON format in file '\(path)'. \(decodingError.localizedDescription)")
+            print("\(red)❌ Error: Invalid JSON format in file '\(path)'. \(decodingError.localizedDescription)\(reset)")
         } catch {
-            print("❌ Error importing commands: \(error.localizedDescription)")
+            print("\(red)❌ Error importing commands: \(error.localizedDescription)\(reset)")
         }
     }
 }
