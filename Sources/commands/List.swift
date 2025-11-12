@@ -7,7 +7,7 @@ struct List: ParsableCommand {
 
     func run() throws {
         let commands = try CommandManager.readCommands()
-        for (alias, command) in commands {
+        for (alias, command) in commands.sorted(by: { $0.key < $1.key }) {
             print("\(alias): \(command)")
         }
     }

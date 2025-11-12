@@ -36,4 +36,34 @@ final class CommandManager {
         let commands = try JSONDecoder().decode(Commands.self, from: data)
         return commands.items
     }
+
+    static func deleteCommand(alias: String) throws -> Bool {
+        var items = try readCommands()
+        
+        guard items.removeValue(forKey: alias) != nil else {
+            return false
+        }
+        
+        var commands = Commands()
+        commands.items = items
+        let data = try JSONEncoder().encode(commands)
+        try data.write(to: commandsFileURL)
+        return true
+    }
+
+    static func renameAlias(oldAlias: String, newAlias: String) throws -> Bool {
+        var items = try readCommands()
+        
+        guard let command = items.removeValue(forKey: oldAlias) else {
+            return false
+        }
+        
+        items[newAlias] = command
+        
+        var commands = Commands()
+        commands.items = items
+        let data = try JSONEncoder().encode(commands)
+        try data.write(to: commandsFileURL)
+        return true
+    }
 }

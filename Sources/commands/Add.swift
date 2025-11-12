@@ -2,10 +2,10 @@ import ArgumentParser
 
 struct Add: ParsableCommand {
     static let configuration = CommandConfiguration(
-        abstract: "Add a new command."
+        abstract: "Add a new command for a given alias."
     )
 
-    @Argument(help: "The alias of the command.")
+    @Argument(help: "The alias of the command to add.")
     var alias: String
 
     @Argument(help: "The command to add.")
