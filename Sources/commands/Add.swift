@@ -2,10 +2,10 @@ import ArgumentParser
 
 struct Add: ParsableCommand {
     static let configuration = CommandConfiguration(
-        abstract: "Add a new command."
+        abstract: "Add a new command for a given alias."
     )
 
-    @Argument(help: "The alias of the command.")
+    @Argument(help: "The alias of the command to add.")
     var alias: String
 
     @Argument(help: "The command to add.")
@@ -14,9 +14,9 @@ struct Add: ParsableCommand {
     func run() throws {
         do {
             try CommandManager.addCommand(alias: alias, command: command)
-            print("✅ Command '\(alias)' added successfully.")
+            print("\(green)✅ Command '\(alias)' added successfully.\(reset)")
         } catch {
-            print("❌ Error adding command: \(error)")
+            print("\(red)❌ Error adding command: \(error)\(reset)")
         }
     }
 }

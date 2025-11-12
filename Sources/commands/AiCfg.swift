@@ -46,10 +46,10 @@ struct AiCfg: ParsableCommand {
                 if let json = String(data: data, encoding: .utf8) {
                     print(json)
                 } else {
-                    print("Failed to encode AI configuration as UTF-8.")
+                    print("\(red)❌ Failed to encode AI configuration as UTF-8.\(reset)")
                 }
             } else {
-                print("No AI configuration set.")
+                print("\(yellow)No AI configuration set.\(reset)")
             }
         }
     }

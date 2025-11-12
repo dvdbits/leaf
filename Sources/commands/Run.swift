@@ -13,7 +13,7 @@ struct Run: ParsableCommand {
         if let command = commands[alias] {
             CommandRunner.run(commandText: command)
         } else {
-            print("Command '\(alias)' not found.")
+            print("\(red)❌ Command '\(alias)' not found.\(reset)")
         }
     }
 }
